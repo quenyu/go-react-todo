@@ -1,12 +1,11 @@
-import './App.css'
-import useSWR from "swr";
-import {fetcher} from "./api/fetchData.ts";
+import {Main} from "./components/Main/Main.tsx";
 
-function App() {
-    const {data} = useSWR("api/todos", fetcher)
-    return (
-        <div>{JSON.stringify(data)}</div>
-    )
-}
+const App = () => {
+  return (
+    <>
+      <Main />
+    </>
+  );
+};
 
-export default App
+export default App;

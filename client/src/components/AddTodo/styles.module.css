@@ -1,0 +1,20 @@
+.addTodoForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.addTodoForm input {
+    font-size: 22px;
+    padding: 0.25rem;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+.addTodoForm input::placeholder {
+    font-size: 18px;
+}
