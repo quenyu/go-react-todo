@@ -1,6 +1,6 @@
 import styles from './styles.module.css';
+import ky from "ky"
 import { AddTodo } from "../AddTodo/AddTodo.tsx";
-import ky from "ky";
 import { useCallback, useEffect, useState } from 'react';
 import { ENDPOINT } from '../../api/fetchData.ts';
 import { Todo } from '../../types/todo.ts';
