@@ -1,29 +1,24 @@
-import {useForm} from "react-hook-form"
+import { useForm } from "react-hook-form"
 import styles from './styles.module.css'
-import {ENDPOINT} from "../../api/fetchData.ts";
-import {KeyedMutator} from "swr";
+// import { ENDPOINT } from "../../api/fetchData.ts";
+// import {KeyedMutator} from "swr";
+import ky from "ky";
+import { ENDPOINT } from "../../api/fetchData";
 
 type IFormInput = {
   title: string
   body: string
 }
 
-export type Todo = {
-  id: number
-  title: string
-  body: string
-  done: boolean
-}
-
 type Props = {
-  mutate: KeyedMutator<Todo[]>
+  fetchTodos: () => void
 }
 
-export function AddTodo({mutate}: Props) {
+export function AddTodo({ fetchTodos }: Props) {
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
     reset,
   } = useForm<IFormInput>({
     defaultValues: {
@@ -32,24 +27,21 @@ export function AddTodo({mutate}: Props) {
     }
   })
 
-  async function onSubmit(values: { title: string; body: string }) {
-    const updated = await fetch(`${ENDPOINT}/api/todos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((r) => r.json());
-
-    mutate(updated);
-    reset()
+  async function onSubmit(values: IFormInput) {
+    try {
+      await ky.post(`${ENDPOINT}/api/todos`, { json: values });
+      reset();
+      fetchTodos();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.addTodoForm}>
       <input placeholder="Title" {...register("title")} />
 
-      <input placeholder="Body" {...register("body", {required: false})} />
+      <input placeholder="Body" {...register("body", { required: false })} />
       {errors?.body?.type === "required" && <span>This field is required</span>}
 
       <button type="submit">

@@ -1,28 +1,21 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 	"server/packages/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	app := fiber.New()
-	api.SetupPostgres()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
-		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-		AllowHeaders: "*",
-	}))
+	router := gin.Default()
+	router.Use(api.CORSMiddleware())
 
-	app.Get("/api/todos", api.GetTodos)
+	router.GET("/api/todos", api.GetTodos)
+	router.GET("/api/todos/:id", api.GetTodoByID)
+	router.POST("/api/todos", api.PostNewTodo)
+	router.PUT("/api/todos/:id", api.UpdateTodoByID)
+	router.DELETE("/api/todos/:id", api.DeleteTodoByID)
 
-	app.Post("/api/todos", api.PostNewTodo)
-
-	app.Patch("/api/todos/:id/done", api.SetToCompletedTodo)
-
-	app.Delete("/api/todos/:id", api.DeleteTodo)
-
-	log.Fatal(app.Listen(":4000"))
+	log.Fatal(router.Run(":4000"))
 }
